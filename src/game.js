@@ -438,6 +438,7 @@ const STORY = [
 	{
 		d: ['We need you to stir the oxygen tanks in the Service Module.', 'Hit the switches to stir the Oxygen tanks.'],
 		check: () => (f.blast),
+		dp: 0.7,
 	},
 	{
 		d: [
@@ -446,6 +447,7 @@ const STORY = [
 			'$We should check the fuel cells.',
 		],
 		check: () => (f.checkFC),
+		dp: 0.71,
 	},
 	{
 		d: [
@@ -453,26 +455,32 @@ const STORY = [
 			'Open the hatch and head into the Lim.'
 		],
 		check: () => (allParts.LM.crew >= 3),
+		dp: 0.72,
 	},
 	{
 		d: ['Use the computer to transfer data from the CM to the LM.'],
 		check: () => (f.dataXfer),
+		dp: 0.73,
 	},
 	{
 		d: ['Seal the door.', 'Close the hatch to CM so we can shut it down.'],
 		check: () => (!allParts.hatch.open),
+		dp: 0.74,
 	},
 	{
 		d: ['Take command from the LM'],
 		check: () => (allParts.LM.command),
+		dp: 0.75,
 	},
 	{
 		d: ['You can turn off the Command Module.', `We don't want to lose any more power.`],
 		check: () => (!allParts.CM.power),
+		dp: 0.76,
 	},
 	{
 		d: ['The Lim needs everything turned off except the essentials.'],
 		check: () => (!allParts.LM.power),
+		dp: 0.77,
 	},
 	{
 		start: () => { f.atMoon = 1; },
@@ -480,12 +488,14 @@ const STORY = [
 			`We need to do another burn with the Lim's engine for a free return trajectory.`,
 		], // position ship?
 		check: () => (f.freeReturn),
+		dp: 1,
 	},
 	{
 		d: ['The C.O. 2 in the Lim is increasing too fast with all three of you in there.',
 			'You need to fabricate a new C.O. 2 absorbing cannister.',
 		],
 		check: () => (f.co2Scrub),
+		dp: 0.9,
 	},
 	{
 		d: [`Sorry it's so cold in there.`,
@@ -493,10 +503,12 @@ const STORY = [
 			'Open the hatch to come in to the CM.',
 		],
 		check: () => (allParts.CM.crew >= 3),
+		dp: 0.4,
 	},
 	{
 		d: [`We've never powered up a CM before, but we think it can be done.`, 'Power up the Command Module.'],
 		check: () => (allParts.CM.power),
+		dp: 0.35,
 	},
 	{
 		d: [
@@ -504,23 +516,27 @@ const STORY = [
 			`You need to do another burn to correct your entry angle or you'll bounce off the atmosphere back into space.`,
 		],
 		check: () => (f.reentryCourse),
+		dp: 0.3,
 	},
 	{
 		d: [`You're almost home. It's time to jettison the Service Module.`,
 			'Disconnect the SM and take some photos as it leaves',
 		], // Jettison SM
 		check: () => (allParts.SM.disconnected),
+		dp: 0.25,
 	},
 	{
 		d: [`The Lim was a good lifeboat, but it's time to say goodbye.`,
 			'Disconnect the LM, and start preparing for entry into the atmosphere.',
 		], // Jettison LM
 		check: () => (allParts.LM.disconnected),
+		dp: 0.1,
 	},
 	{
 		start: () => { f.atmosphere = 1; },
 		d: [`The heat shield worked! You're in the atmosphere!`, 'Open your parachute quickly.'],
 		check: () => (allParts['CM-parachutes'].deployed),
+		dp: 0,
 	},
 	{
 		d: ['Welcome home!'],
@@ -531,6 +547,7 @@ let focusPartId = N;
 let storyCheckIntervalId = 0;
 let storyBarkTimerId = 0;
 let storyBeatIndex = 0;
+let distPercent = 0;
 
 function getStoryBeat() {
 	return STORY[storyBeatIndex];
@@ -555,7 +572,8 @@ function stopBark() {
 function startStory() {
 	stopStory();
 	storyCheckIntervalId = setInterval(checkStory, 500);
-	bark();
+	moveStory(0);
+	// bark();
 }
 
 function nextBark(b) {
@@ -578,6 +596,8 @@ function moveStory(toIndex) {
 	storyBeatIndex = toIndex;
 	const b = getStoryBeat();
 	if (b.start) b.start();
+	if (b.dp || b.dp === 0) distPercent = b.dp;
+	render();
 	storyBarkTimerId = setTimeout(() => bark(b), 1000);
 	// bark(b);
 }
@@ -649,24 +669,24 @@ function setScene(x, y, scale = 1) {
 function zoomTo(part = ship) {
 	if (!part) part = ship; // return setScene(0, 0, 1);
 	let [x, y] = getPartCoords(part);
-	console.log(part.id, 'intial x,y', x, y);
+	// console.log(part.id, 'intial x,y', x, y);
 	let zoom = 1;
 	const { width, height } = $id(part.id).getBBox();
 	// const { w, h } = part;
 	const size = Math.max(width, height);
-	console.log(width, height, size);
+	// console.log(width, height, size);
 	zoom = 400 / (size * 1.5);
 	y = (-y - height/2) + HALF;
 	x = (-x - width/2) + HALF;
 	setScene(x, y, zoom);
-	console.log('x, y, zoom:\n', x, y, zoom);
+	// console.log('x, y, zoom:\n', x, y, zoom);
 }
 
 function zoomOut() { zoomTo(); }
 
 win.activateButton = (buttonId) => {
 	const fn = buttonActions[buttonId];
-	console.log(buttonId, fn);
+	// console.log(buttonId, fn);
 	if (fn) fn();
 	render();
 };
@@ -679,7 +699,7 @@ function openPartPanel(part) {
 		p.classList.remove('p-o');
 		return;
 	}
-	console.log(part.t, part.id);
+	// console.log(part.t, part.id);
 	let buttonsHtml = '';
 	if (part.b) {
 		buttonsHtml = part.b.map((b) => {
@@ -710,7 +730,10 @@ function setupEvents() {
 }
 
 function render() {
+	// console.log('---RENDER---');
 	$html('scene-g', getSvg(ship));
+	const mapX = distPercent * 360;
+	$id('a13').style.transform = `translate(${mapX}px,0px)`;
 }
 
 listen('DOMContentLoaded', () => {

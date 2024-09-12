@@ -5,11 +5,13 @@ body {
 	overflow: hidden;
 	color: #dff;
 	font-family: 'Courier New', Courier, monospace;
+	text-align: center;
 }
 svg {
 	background: #000;
 	width: 100vmin;
 	height: 100vmin;
+	margin: 0 auto;
 }
 b {
 	font-style: normal;
@@ -105,7 +107,6 @@ text {
 	bottom: 0;
 	width: 100vw;
 	padding: 5vh 0;
-	text-align: center;
 	color: #39f;
 }
 #bark {
@@ -146,32 +147,12 @@ button:hover {
 	background: #ffc;
 }
 
-
-#map {
-	position: relative;
-	margin: 2vmin;
+#map text {
+	font-size: 9px;
+	stroke: transparent;
+	fill: #dffd;
+	text-anchor: middle;
 }
-#earth, #moon {
-	position: absolute;
-	border: solid 2px #dff;
-	width: 2vmin;
-	height: 2vmin;
-	border-radius: 100%;
-}
-#moon {
-	right: 1em;
-}
-#earth {
-	left: 1em;
-	width: 4vmin;
-	height: 4vmin;
-}
-#moon::after,
-#earth::after {
-	display: block;
-	margin: 1.5em 0 0 0;
-	content: 'Earth';
-}
-#moon::after {
-	content: 'Moon';
+#course {
+	stroke-opacity: 0.3;
 }
