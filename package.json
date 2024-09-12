@@ -1,0 +1,16 @@
+{
+  "name": "apollo-13",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "vite dev"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "rocket-boots-eslint": "github:rocket-boots/rocket-boots-eslint",
+    "vite": "^5.4.2"
+  }
+}
