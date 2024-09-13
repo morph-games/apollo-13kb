@@ -11,7 +11,7 @@ const HALF = BOX_SIZE / 2;
 const { random, floor } = Math;
 
 const N = null;
-const BARK_TIME = 10000;
+const BARK_TIME = 9000;
 
 const fuelCell = 'M2,0 h10 v13 h2 v15 h-14 v-15 h2 Z';
 const oTank = 'M4,4 l4,-4 h7 l4,4 v7 l-4,4 h-7 l-4,-4 Z';
@@ -610,7 +610,7 @@ const STORY = [
 	// Date is April 13
 	{
 		d: [
-			`Hope all is well up there crew. Take a look around but be careful what switches you press.`,
+			`Take a look around the ship, but be careful what switches you press.`,
 			'We need you to stir the oxygen tanks in the Service Module.',
 			'Hit the switches to stir the Oxygen tanks to keep them working.',
 		],
